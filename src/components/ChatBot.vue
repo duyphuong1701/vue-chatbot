@@ -1,6 +1,10 @@
 <template>
   <section class="chat-box">
-    <div class="chat-box-list-container" ref="chatbox">
+    <div
+      class="chat-box-list-container"
+      ref="chatbox"
+      style="border: 1px solid #ccc"
+    >
       <ul class="chat-box-list">
         <li
           class="message"
@@ -104,7 +108,7 @@ export default {
 .chat-box {
   margin: 10px;
   border: none;
-  width: 70vw;
+  width: 80vw;
   height: 70vh;
   border-radius: 4px;
   margin-left: auto;
