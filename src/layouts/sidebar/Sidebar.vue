@@ -52,7 +52,7 @@ export default {
       },
         {
         title: "Nhập dữ liệu",
-        icon: "mdi-database",
+        icon: "mdi-help-circle-outline",
         to: "/dataQuestion"
       },
       {
@@ -65,6 +65,11 @@ export default {
         title: "Mô hình",
         icon: "mdi-cube",
         to: "/pages/alerts"
+      },
+       {
+        title: "Thể loại",
+        icon: "mdi-format-list-numbered",
+        to: "/category"
       },
 
     ]

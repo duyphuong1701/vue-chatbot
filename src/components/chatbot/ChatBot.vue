@@ -46,7 +46,7 @@ export default {
       });
       this.message = "";
       this.$axios
-        .get(`http://192.168.1.2:8081/query?question=${message}`)
+        .get(`http://192.168.1.20:8765/query?question=${message}`)
         .then((res) => {
           console.log(res);
           this.messages.push({

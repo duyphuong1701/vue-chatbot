@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 import Layout from './layouts/Layout.vue'
 import DataView from './views/DataView.vue'
 import HomeView from "./views/HomeView.vue"
-import DataPage from "./components/DataPage.vue"
+import DataPage from "./components/question_answer/DataPage.vue"
+import CategoryPage from "./components/category/CategoryPage.vue"
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -28,6 +29,11 @@ export default new VueRouter({
                 name: "dataList",
                 path: '/list',
                 component: DataPage,
+            },
+            {
+                name: "category",
+                path: '/category',
+                component: CategoryPage,
             }]
         },
     ],

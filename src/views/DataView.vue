@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import QuestionPage from "@/components/QuestionPage.vue"
+import QuestionPage from "@/components/chatbot/QuestionPage.vue"
 export default {
   name:"DataView",
   components:{

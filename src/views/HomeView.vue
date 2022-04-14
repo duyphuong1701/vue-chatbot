@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import ChatBot from "@/components/ChatBot.vue";
+import ChatBot from "@/components/chatbot/ChatBot.vue";
 export default {
   name: "HomeView",
   components: {

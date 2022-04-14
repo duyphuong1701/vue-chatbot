@@ -8,7 +8,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Danh sách dữ liệu</v-toolbar-title>
+        <v-toolbar-title>Danh sách thể loại</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -27,24 +27,17 @@
                 <v-row>
                   <v-text-field
                     :counter="500"
-                    v-model="editedItem.txt_question"
-                    label="Câu hỏi"
+                    v-model="editedItem.categoryId"
+                    label="Mã thể loại"
                   ></v-text-field>
                 </v-row>
                 <v-row>
                   <v-text-field
                     :counter="500"
-                    v-model="editedItem.txt_answer"
-                    label="Câu trả lời"
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-select
-                    :items="type_question"
-                    v-model="editedItem.opt_type"
-                    label="Chủ đề"
+                    v-model="editedItem.categoryName"
+                    label="Tên thể loại"
                     required
-                  ></v-select>
+                  ></v-text-field>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -84,39 +77,30 @@
 </template>
 <script>
 export default {
+  name: "CategoryPage",
   data: () => ({
-    type_question: [
-      "Điểm tốt nghiệp-ID_10",
-      "Trang phục - ID_I.2.2",
-      "Điều cần lưu ý của SVDHCT- ID_I.2.3",
-      "Học phí - ID_11",
-      "Khác",
-    ],
     dialog: false,
     dialogDelete: false,
     headers: [
       {
-        text: "Câu hỏi",
+        text: "Mã thể loại",
         align: "start",
         sortable: false,
-        value: "txt_question",
-        width: "40%",
+        value: "categoryId",
+        width: "45%",
       },
-      { text: "Câu trả lời", value: "txt_answer", width: "40%" },
-      { text: "Loại", value: "opt_type", width: "13%" },
-      { text: "Thao tác", value: "actions", sortable: false, width: "7%" },
+      { text: "Tên thể loại", value: "categoryName", width: "45%" },
+      { text: "Thao tác", value: "actions", sortable: false, width: "10%" },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      txt_question: "",
-      txt_answer: "",
-      opt_type: "",
+      categoryId: "",
+      categoryName: "",
     },
     defaultItem: {
-      txt_question: "",
-      txt_answer: "",
-      opt_type: "",
+      categoryId: "",
+      categoryName: "",
     },
   }),
 
@@ -125,7 +109,6 @@ export default {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
   },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -137,39 +120,73 @@ export default {
 
   created() {
     this.initialize();
+    this.getCategory();
   },
 
   methods: {
     initialize() {
       this.desserts = [
         {
-          txt_question:
-            "Những điều sinh viên cần lưu ý khi theo học tại trường",
-          txt_answer:
-            "Sinh viên phải giữ trật tự, vệ sinh, chấp hành luật giao thông, để xe đúng nơi quy định. Sinh viên Trường ĐHCT phải có nếp sống văn minh; không làm ồn, gây mất trật tự; không tụ tập uống rượu bia",
-          opt_type: "Điều cần lưu ý của SVDHCT- ID_I.2.3",
-        },
-        {
-          txt_question: "Trang phục sinh viên khi đến lớp",
-          txt_answer:
-            "Khi vào trường, sinh viên phải mang bảng tên, trang phục sạch sẽ, gọn gàng, kín đáo; phải mặc đồng phục khi tham dự những học phần có yêu cầu",
-          opt_type: "Trang phục - ID_I.2.2",
-        },
-        {
-          txt_question: "Mức học phí tính như thế nào",
-          txt_answer:
-            "Học phí đóng theo học kỳ và tính theo tổng số tín chỉ mà sinh viên đã đăng ký học ở học kỳ đó. Mức học phí do hiệu trưởng quyết định",
-          opt_type: "Học phí - ID_11",
-        },
-        {
-          txt_question: "Ngành khoa học máy tính học những gì",
-          txt_answer: "",
-        },
-        {
-          txt_question: "Ra trường ngành khoa học máy tính có thể làm gì",
-          txt_answer: "",
-        },
+          categoryId: "ID_I.2.3",
+          categoryName: "Điều cần lưu ý của SVDHCT",
+        }
       ];
+    },
+    getCategory() {
+      try {
+        this.$axios
+          .get(`http://localhost:8089/wave-sample/api/category/`)
+          .then((res) => {
+            this.desserts = res.data;
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    deleteCategory(item) {
+      try {
+        this.$axios.delete(
+          `http://localhost:8089/wave-sample/api/category/${item.categoryId}`
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    putCategory(item) {
+      try {
+        console.log(`update item ${item.categoryId}`);
+        console.log(item);
+        this.$axios.put(
+          `http://localhost:8089/wave-sample/api/category/${item.categoryId}`,
+          { categoryName: item.categoryName },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    postCategory(item) {
+      try {
+        console.log(`post item ${item.categoryId}`);
+        console.log(item);
+        this.$axios.post(
+          `http://localhost:8089/wave-sample/api/category/`,
+          { 
+            categoryId: item.categoryId,
+            categoryName: item.categoryName },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
     },
 
     editItem(item) {
@@ -182,6 +199,7 @@ export default {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
+      this.deleteCategory(item);
     },
 
     deleteItemConfirm() {
@@ -208,8 +226,10 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        this.putCategory(this.editedItem);
       } else {
         this.desserts.push(this.editedItem);
+        this.postCategory(this.editedItem);
       }
       this.close();
     },
