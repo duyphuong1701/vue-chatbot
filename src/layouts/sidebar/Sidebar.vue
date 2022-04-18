@@ -62,9 +62,9 @@ export default {
       },
 
       {
-        title: "Mô hình",
+        title: "Dữ liệu",
         icon: "mdi-cube",
-        to: "/pages/alerts"
+        to: "/data"
       },
        {
         title: "Thể loại",

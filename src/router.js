@@ -5,6 +5,7 @@ import DataView from './views/DataView.vue'
 import HomeView from "./views/HomeView.vue"
 import DataPage from "./components/question_answer/DataPage.vue"
 import CategoryPage from "./components/category/CategoryPage.vue"
+import OverviewData from "./components/data/OverviewData.vue";
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -29,6 +30,11 @@ export default new VueRouter({
                 name: "dataList",
                 path: '/list',
                 component: DataPage,
+            },
+            {
+                name: "data",
+                path: '/data',
+                component: OverviewData,
             },
             {
                 name: "category",

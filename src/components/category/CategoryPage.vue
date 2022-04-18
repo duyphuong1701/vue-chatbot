@@ -2,15 +2,11 @@
   <v-data-table
     :headers="headers"
     :items="desserts"
-    sort-by="calories"
-    class="elevation-1"
-    style="width: 80vw"
+    class="elevation-5"
+    style="width: 75vw"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Danh sách thể loại</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -26,7 +22,6 @@
               <v-container>
                 <v-row>
                   <v-text-field
-                    :counter="500"
                     v-model="editedItem.categoryId"
                     label="Mã thể loại"
                   ></v-text-field>
@@ -129,7 +124,7 @@ export default {
         {
           categoryId: "ID_I.2.3",
           categoryName: "Điều cần lưu ý của SVDHCT",
-        }
+        },
       ];
     },
     getCategory() {
@@ -175,9 +170,10 @@ export default {
         console.log(item);
         this.$axios.post(
           `http://localhost:8089/wave-sample/api/category/`,
-          { 
+          {
             categoryId: item.categoryId,
-            categoryName: item.categoryName },
+            categoryName: item.categoryName,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -204,7 +200,6 @@ export default {
 
     deleteItemConfirm() {
       this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
     },
 
     close() {

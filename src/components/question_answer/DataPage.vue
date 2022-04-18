@@ -2,140 +2,55 @@
   <v-data-table
     :headers="headers"
     :items="desserts"
-    sort-by="calories"
-    class="elevation-1"
-    style="width: 80vw"
+    :header-props="{ sortIcon: null }"
   >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Danh sách dữ liệu</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Tạo mới
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">Chỉnh sửa</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-text-field
-                    v-model="editedItem.asker"
-                    label="Tên sinh viên"
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    v-model="editedItem.asker_email"
-                    label="Email sinh viên"
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    v-model="editedItem.question"
-                    label="Câu hỏi"
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-text-field
-                    v-model="editedItem.answer"
-                    label="Trả lời"
-                  ></v-text-field>
-                </v-row>
-                <v-row>
-                  <v-select
-                    :items="type_question"
-                    v-model="editedItem.opt_type"
-                    label="Chủ đề"
-                  ></v-select>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Dừng </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Thêm </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Bạn có muốn xóa?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Dừng</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >Xóa</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
     </template>
   </v-data-table>
 </template>
 <script>
 export default {
   data: () => ({
-    type_question: [
-      "Điểm tốt nghiệp-ID_10",
-      "Trang phục - ID_I.2.2",
-      "Điều cần lưu ý của SVDHCT- ID_I.2.3",
-      "Học phí - ID_11",
-      "Khác",
-    ],
+    categoryIds: [],
     dialog: false,
     dialogDelete: false,
     headers: [
+      { text: "ID", value: "questionAnswerId", width: "5%" },
       {
-        text: "Tên sinh viên",
+        text: "Tên SV",
         align: "start",
-        sortable: false,
         value: "asker",
-        width: "10%",
+        width: "15%",
       },
       {
         text: "Email sinh viên",
         value: "asker_email",
         width: "10%",
       },
-      { text: "Câu hỏi", value: "question", width: "30%" },
-      { text: "Trả lời", value: "answer", width: "30%" },
-      { text: "Loại", value: "opt_type", width: "10%" },
-       { text: "Thao tác", value: "actions", sortable: false, width: "10%" }
+      { text: "Câu hỏi", value: "question", width: "25%" },
+      { text: "Trả lời", value: "answer", width: "25%" },
+      { text: "Loại", value: "categoryId", width: "10%" },
+      { text: "Thao tác", value: "actions", width: "10%" },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
+      questionAnswerId: 0,
       asker: "",
       asker_email: "",
       question: "",
       answer: "",
-      opt_type: "",
+      categoryId: "",
     },
     defaultItem: {
+      questionAnswerId: 0,
       asker: "",
       asker_email: "",
       question: "",
       answer: "",
-      opt_type: "",
+      categoryId: "",
     },
   }),
 
@@ -157,26 +72,32 @@ export default {
   created() {
     this.initialize();
     this.getQuestionAnswer();
+    this.getCategory();
   },
 
   methods: {
     initialize() {
       this.desserts = [
         {
+          questionAnswerId: 1,
           asker: "Nguyễn Duy Phương",
           asker_email: "phuongb1812294@student.ctu.edu.vn",
           question: "test",
           answer: "test",
-          opt_type: "Điểm tốt nghiệp-ID_10",
+          categoryId: "Điểm tốt nghiệp-ID_10",
         },
       ];
     },
-  getCategory() {
+    getCategory() {
       try {
         this.$axios
           .get(`http://localhost:8089/wave-sample/api/category/`)
           .then((res) => {
-            this.type_question = res.data.categoryId;
+            var arr = [];
+            res.data.forEach((element) => {
+              arr.push(`${element.categoryId}-${element.categoryName}`);
+            });
+            this.categoryIds = arr;
           });
       } catch (e) {
         console.log(e);
@@ -188,7 +109,6 @@ export default {
           .get(`http://localhost:8089/wave-sample/api/question-answer`)
           .then((res) => {
             this.desserts = res.data;
-            console.log(res.data);
           });
       } catch (e) {
         console.log(e);
@@ -197,7 +117,7 @@ export default {
     deleteQuestionAnswer(item) {
       try {
         this.$axios.delete(
-          `http://localhost:8089/wave-sample/api/question-answer${item.categoryId}`
+          `http://localhost:8089/wave-sample/api/question-answer/${item.questionAnswerId}`
         );
       } catch (e) {
         console.log(e);
@@ -205,11 +125,17 @@ export default {
     },
     putQuestionAnswer(item) {
       try {
-        console.log(`update item ${item.categoryId}`);
         console.log(item);
         this.$axios.put(
-          `http://localhost:8089/wave-sample/api/question-answer${item.categoryId}`,
-          { categoryName: item.categoryName },
+          `http://localhost:8089/wave-sample/api/question-answer/${item.questionAnswerId}`,
+          {
+            questionAnswerId: item.questionAnswerId,
+            asker: item.asker,
+            asker_email: item.asker_email,
+            question: item.question,
+            answer: item.answer,
+            categoryId: item.categoryId,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -222,13 +148,16 @@ export default {
     },
     postQuestionAnswer(item) {
       try {
-        console.log(`post item ${item.categoryId}`);
+        console.log(`post item ${item.questionAnswerId}`);
         console.log(item);
         this.$axios.post(
-          `http://localhost:8089/wave-sample/api/question-answer`,
+          `http://localhost:8089/wave-sample/api/question-answer/`,
           {
+            asker: item.asker,
+            asker_email: item.asker_email,
+            question: item.question,
+            answer: item.answer,
             categoryId: item.categoryId,
-            categoryName: item.categoryName,
           },
           {
             headers: {
@@ -250,8 +179,9 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.
-      this.dialogDelete = true;
+      this.this.dialogDelete = true;
+      console.log(item);
+      this.deleteQuestionAnswer(item);
     },
 
     deleteItemConfirm() {
@@ -278,8 +208,10 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        this.putQuestionAnswer(this.editedItem);
       } else {
         this.desserts.push(this.editedItem);
+        this.postQuestionAnswer(this.editedItem);
       }
       this.close();
     },
