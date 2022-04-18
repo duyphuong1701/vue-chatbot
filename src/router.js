@@ -4,7 +4,7 @@ import Layout from './layouts/Layout.vue'
 import DataView from './views/DataView.vue'
 import HomeView from "./views/HomeView.vue"
 import DataPage from "./components/question_answer/DataPage.vue"
-import CategoryPage from "./components/category/CategoryPage.vue"
+import CategoryTable from "./components/category/CategoryTable.vue"
 import OverviewData from "./components/data/OverviewData.vue";
 Vue.use(VueRouter)
 
@@ -39,7 +39,7 @@ export default new VueRouter({
             {
                 name: "category",
                 path: '/category',
-                component: CategoryPage,
+                component: CategoryTable,
             }]
         },
     ],

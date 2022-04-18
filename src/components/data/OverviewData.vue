@@ -5,25 +5,29 @@
         <v-tab @click="changeIndex(1)">Data Page</v-tab>
         <v-tab @click="changeIndex(2)">Category</v-tab>
         <v-tab @click="changeIndex(3)">Question</v-tab>
+        <v-tab @click="changeIndex(4)">Answer</v-tab>
       </v-tabs>
     </div>
     <div style="height: 90%; width: 100%">
       <data-page v-if="this.indexTab == 1" />
-      <category-page v-if="this.indexTab == 2" />
-      <data-table v-if="this.indexTab == 3" />
+      <category-table v-if="this.indexTab == 2" />
+      <question-table v-if="this.indexTab == 3" />
+      <answer-table v-if="this.indexTab == 4" />
     </div>
   </v-container>
 </template>
 <script>
-import CategoryPage from "../category/CategoryPage.vue";
 import DataPage from "../question_answer/DataPage.vue";
-import DataTable from "../question/QuestionTable.vue";
+import QuestionTable from "../question/QuestionTable.vue";
+import AnswerTable from "../answer/AnswerTable.vue";
+import CategoryTable from '../category/CategoryTable.vue';
 export default {
   name: "OverviewData",
   components: {
     DataPage,
-    CategoryPage,
-    DataTable,
+    CategoryTable,
+    QuestionTable,
+    AnswerTable,
   },
   data: () => ({
     alignments: ["start", "center", "end"],
