@@ -1,11 +1,6 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    class="elevation-5"
-    style="width: 75vw"
-  >
-    <template v-slot:top>
+  <v-data-table :headers="headers" :items="desserts">
+    <template>
       <v-toolbar flat>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -74,6 +69,7 @@
 export default {
   name: "CategoryPage",
   data: () => ({
+    BASE_URL: "http://localhost:8089/wave-sample/api/category",
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -129,30 +125,24 @@ export default {
     },
     getCategory() {
       try {
-        this.$axios
-          .get(`http://localhost:8089/wave-sample/api/category/`)
-          .then((res) => {
-            this.desserts = res.data;
-          });
+        this.$axios.get(`${this.BASE_URL}`).then((res) => {
+          this.desserts = res.data;
+        });
       } catch (e) {
         console.log(e);
       }
     },
     deleteCategory(item) {
       try {
-        this.$axios.delete(
-          `http://localhost:8089/wave-sample/api/category/${item.categoryId}`
-        );
+        this.$axios.delete(`${this.BASE_URL}/${item.categoryId}`);
       } catch (e) {
         console.log(e);
       }
     },
     putCategory(item) {
       try {
-        console.log(`update item ${item.categoryId}`);
-        console.log(item);
         this.$axios.put(
-          `http://localhost:8089/wave-sample/api/category/${item.categoryId}`,
+          `${this.BASE_URL}/${item.categoryId}`,
           { categoryName: item.categoryName },
           {
             headers: {
@@ -169,7 +159,7 @@ export default {
         console.log(`post item ${item.categoryId}`);
         console.log(item);
         this.$axios.post(
-          `http://localhost:8089/wave-sample/api/category/`,
+          `${this.BASE_URL}`,
           {
             categoryId: item.categoryId,
             categoryName: item.categoryName,
@@ -194,12 +184,13 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.deleteCategory(this.editedItem);
       this.dialogDelete = true;
-      this.deleteCategory(item);
     },
 
     deleteItemConfirm() {
       this.desserts.splice(this.editedIndex, 1);
+      this.closeDelete();
     },
 
     close() {
