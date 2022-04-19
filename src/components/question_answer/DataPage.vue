@@ -1,12 +1,30 @@
 <template>
   <div>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Tìm kiếm"
-      single-line
-      hide-details
-    ></v-text-field>
+    <v-row justify="center">
+      <v-col md="10">
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Tìm kiếm"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-col>
+      <v-dialog v-model="dialog" max-width="500px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            Tạo mới
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="close"> Dừng </v-btn>
+            <v-btn color="blue darken-1" text @click="save"> Lưu </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-data-table :search="search" :headers="headers" :items="desserts">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
@@ -21,7 +39,6 @@
             <v-text-field
               label="ID"
               v-model="editedItem.questionAnswerId"
-              disabled
             ></v-text-field>
             <v-text-field
               label="Người gửi"
@@ -30,7 +47,6 @@
             <v-text-field
               label="Mail người gửi"
               v-model="editedItem.asker_email"
-              disabled
             ></v-text-field>
             <v-text-field
               label="Câu hỏi"
@@ -39,11 +55,11 @@
             <v-text-field
               label="Câu trả lời"
               v-model="editedItem.answer"
-              disabled
             ></v-text-field>
             <v-select
-              label="ID chủ đề"
-              v-model="editedItem.categoryIds"
+              :items="categoryIds"
+              v-model="editedItem.categoryId"
+              label="Chủ đề"
             ></v-select>
           </div>
           <v-card-actions>
@@ -59,7 +75,8 @@
 <script>
 export default {
   data: () => ({
-    BASE_URL: "http://localhost:8089/wave-sample/api/category/",
+    search: "",
+    BASE_URL: "http://localhost:8089/wave-sample/api/question-answer",
     categoryIds: [],
     dialog: false,
     dialogDelete: false,
@@ -124,16 +141,7 @@ export default {
 
   methods: {
     initialize() {
-      this.desserts = [
-        {
-          questionAnswerId: 1,
-          asker: "Nguyễn Duy Phương",
-          asker_email: "phuongb1812294@student.ctu.edu.vn",
-          question: "test",
-          answer: "test",
-          categoryId: "Điểm tốt nghiệp-ID_10",
-        },
-      ];
+      this.desserts = [];
     },
     getCategory() {
       try {
@@ -222,14 +230,8 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.this.dialogDelete = true;
-      console.log(item);
-      this.deleteQuestionAnswer(item);
-    },
-
-    deleteItemConfirm() {
       this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
+      this.deleteQuestionAnswer(item);
     },
 
     close() {

@@ -42,9 +42,9 @@ export default {
   name: "QuestionPage",
   components: {},
   data: () => ({
-    name:"",
+    name: "",
     valid: true,
-    question_content:"",
+    question_content: "",
     email: "",
     emailRules: [
       (v) => !!v || "E-mail is required",
@@ -83,5 +83,11 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+.theme--light.v-data-table tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+.theme--dark.v-data-table tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
 </style>

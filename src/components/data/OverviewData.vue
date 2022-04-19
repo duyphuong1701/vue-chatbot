@@ -1,5 +1,5 @@
  <template>
-  <v-container class="d-flex flex-start" fill-height>
+  <v-container fluid style="margin: 0px; padding: 0px; width: 100%" class="d-flex flex-start" fill-height>
     <div style="height: 10%">
       <v-tabs>
         <v-tab @click="changeIndex(1)">Data Page</v-tab>

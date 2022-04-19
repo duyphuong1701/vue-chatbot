@@ -40,39 +40,27 @@ export default {
   props: {
     expandOnHover: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data: () => ({
     items: [
       {
         title: "Chatbot",
         icon: "mdi-android-messages",
-        to: "/chatbot"
-      },
-        {
-        title: "Nhập dữ liệu",
-        icon: "mdi-help-circle-outline",
-        to: "/dataQuestion"
+        to: "/chatbot",
       },
       {
-        title: "Xem dữ liệu",
-        icon: "mdi-database",
-        to: "/list"
+        title: "Nhập dữ liệu",
+        icon: "mdi-help-circle-outline",
+        to: "/dataQuestion",
       },
-
       {
         title: "Dữ liệu",
         icon: "mdi-cube",
-        to: "/data"
+        to: "/data",
       },
-       {
-        title: "Thể loại",
-        icon: "mdi-format-list-numbered",
-        to: "/category"
-      },
-
-    ]
+    ],
   }),
   computed: {
     // ...mapState(["SidebarColor", "SidebarBg"]),
@@ -88,31 +76,29 @@ export default {
   watch: {
     "$vuetify.breakpoint.smAndDown"(val) {
       this.$emit("update:expandOnHover", !val);
-    }
+    },
   },
 
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss">
-#main-sidebar{
-  box-shadow:1px 0 20px rgba(0,0,0,.08);
-  -webkit-box-shadow:1px 0 20px rgba(0,0,0,.08);
-  .v-navigation-drawer__border{
+#main-sidebar {
+  box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
+  -webkit-box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08);
+  .v-navigation-drawer__border {
     display: none;
   }
-  .v-list{
+  .v-list {
     padding: 8px 15px;
   }
-  .v-list-item{
-      &__icon--text,
-      &__icon:first-child{
-        justify-content: center;
-        text-align: center;
-        width: 20px;
-        
-      }
-      
-  }    
+  .v-list-item {
+    &__icon--text,
+    &__icon:first-child {
+      justify-content: center;
+      text-align: center;
+      width: 20px;
+    }
+  }
 }
 </style>

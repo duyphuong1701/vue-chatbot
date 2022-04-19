@@ -1,12 +1,30 @@
 <template>
   <div>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Tìm kiếm"
-      single-line
-      hide-details
-    ></v-text-field>
+    <v-row justify="center">
+      <v-col md="10">
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Tìm kiếm"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-col>
+      <v-dialog v-model="dialog" max-width="500px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            Tạo mới
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="close"> Dừng </v-btn>
+            <v-btn color="blue darken-1" text @click="save"> Lưu </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-data-table
       :search="search"
       :headers="headers"
