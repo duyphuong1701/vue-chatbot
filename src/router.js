@@ -5,6 +5,7 @@ import DataView from './views/DataView.vue'
 import HomeView from "./views/HomeView.vue"
 import DataPage from "./components/question_answer/DataPage.vue"
 import CategoryTable from "./components/category/CategoryTable.vue"
+import ModelPage from "./components/model/ModelPage.vue"
 import OverviewData from "./components/data/OverviewData.vue";
 Vue.use(VueRouter)
 
@@ -17,8 +18,8 @@ export default new VueRouter({
             path: '/',
             component: Layout,
             children: [{
-                name: "dataQuestion",
-                path: '/dataQuestion',
+                name: "data-question",
+                path: '/data-question',
                 component: DataView,
             },
             {
@@ -40,7 +41,13 @@ export default new VueRouter({
                 name: "category",
                 path: '/category',
                 component: CategoryTable,
-            }]
+            },
+            {
+                name: "model",
+                path: '/model',
+                component: ModelPage,
+            },
+            ]
         },
     ],
 })

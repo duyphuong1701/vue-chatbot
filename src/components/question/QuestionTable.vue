@@ -45,7 +45,6 @@
             <v-text-field
               label="ID chủ đề"
               v-model="editedItem.questionId"
-              disabled
             ></v-text-field>
             <v-text-field
               label="ID chủ đề"
@@ -68,43 +67,49 @@
 </template>
 <script>
 export default {
-  data: () => ({
-    search: "",
-    dialog: false,
-    BASE_URL: "http://localhost:8089/wave-sample/api/question",
-    headers: [
-      {
-        text: "ID câu hỏi",
-        value: "questionId",
-        width: "10%",
+  data: function () {
+    return {
+      search: "",
+      dialog: false,
+      BASE_URL: "http://localhost:8089/wave-sample/api/question",
+      headers: [
+        {
+          text: "ID câu hỏi",
+          value: "questionId",
+          width: "5%",
+        },
+        { text: "ID Chủ đề", value: "categoryId", width: "5%" },
+        { text: "Tên Chủ đề", value: "categoryName", width: "30%" },
+        {
+          text: "Câu hỏi",
+          value: "questionContent",
+          width: "50%",
+        },
+        { text: "Thao tác", value: "actions", width: "10%" },
+      ],
+      categorys: [],
+      desserts: [],
+      editedIndex: -1,
+      editedItem: {
+        questionId: 0,
+        categoryId: "",
+        categoryName: "",
+        questionContent: "",
       },
-      { text: "ID Chủ đề", value: "categoryId", width: "10%" },
-      {
-        text: "Câu hỏi",
-        value: "questionContent",
-        width: "70%",
+      defaultItem: {
+        questionId: 0,
+        categoryId: "",
+        categoryName: "",
+        questionContent: "",
       },
-      { text: "Thao tác", value: "actions", width: "10%" },
-    ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      questionId: 0,
-      categoryId: "",
-      questionContent: "",
-    },
-    defaultItem: {
-      questionId: 0,
-      categoryId: "",
-      questionContent: "",
-    },
-  }),
-
+    };
+  },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
   },
+  mounted() {},
 
   watch: {
     dialog(val) {
@@ -115,22 +120,47 @@ export default {
     },
   },
   created() {
-    this.initialize();
-    this.getQuestion();
+    this.syncData();
   },
 
   methods: {
-    initialize() {
-      this.desserts = [];
+    async syncData() {
+      const question = await this.getQuestion();
+      const category = await this.getCategory();
+      const mapQuestion = question.map((item) => {
+        const id = item.categoryId;
+        const temp = category?.find((x) => x.categoryId === id);
+        console.log(temp)
+        return {
+          ...temp,
+          ...item,
+        };
+      });
+      this.desserts = mapQuestion
     },
-    getQuestion() {
+    async getCategory() {
+      let data;
       try {
-        this.$axios.get(this.BASE_URL).then((res) => {
-          this.desserts = res.data;
+        await this.$axios
+          .get(`http://localhost:8089/wave-sample/api/category/`)
+          .then((res) => {
+            data = res.data;
+          });
+      } catch (e) {
+        console.log(e);
+      }
+      return data;
+    },
+    async getQuestion() {
+      let data;
+      try {
+        await this.$axios.get(this.BASE_URL).then((res) => {
+          data = res.data;
         });
       } catch (e) {
         console.log(e);
       }
+      return data;
     },
     deleteQuestion(item) {
       try {

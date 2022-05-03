@@ -1,6 +1,6 @@
 <template>
   <div>
-   <v-row justify="center">
+    <v-row justify="center">
       <v-col md="10">
         <v-text-field
           v-model="search"
@@ -76,13 +76,14 @@ export default {
       {
         text: "ID trả lời",
         value: "answerId",
-        width: "10%",
+        width: "5%",
       },
-      { text: "ID loại", value: "categoryId", width: "10%" },
+      { text: "ID Chủ đề", value: "categoryId", width: "5%" },
+      { text: "Tên Chủ đề", value: "categoryName", width: "20%" },
       {
         text: "Trả lời",
         value: "answerContent",
-        width: "70%",
+        width: "60%",
       },
       { text: "Thao tác", value: "actions", width: "10%" },
     ],
@@ -91,11 +92,13 @@ export default {
     editedItem: {
       answerId: 0,
       categoryId: "",
+      categoryName: "",
       answerContent: "",
     },
     defaultItem: {
       answerId: 0,
       categoryId: "",
+      categoryName: "",
       answerContent: "",
     },
   }),
@@ -115,22 +118,48 @@ export default {
     },
   },
   created() {
-    this.initialize();
-    this.getQuestion();
+    this.syncData();
   },
 
   methods: {
-    initialize() {
-      this.desserts = [];
+    async syncData() {
+      const question = await this.getQuestion();
+      const category = await this.getCategory();
+      const mapQuestion = question.map((item) => {
+        const id = item.categoryId;
+        const temp = category?.find((x) => x.categoryId === id);
+        console.log(temp);
+        return {
+          ...temp,
+          ...item,
+        };
+      });
+      this.desserts = mapQuestion;
     },
-    getQuestion() {
+    async getCategory() {
+      let data;
       try {
-        this.$axios.get(this.BASE_URL).then((res) => {
-          this.desserts = res.data;
+        await this.$axios
+          .get(`http://localhost:8089/wave-sample/api/category/`)
+          .then((res) => {
+            data = res.data;
+          });
+      } catch (e) {
+        console.log(e);
+      }
+      return data;
+    },
+
+    async getQuestion() {
+      let data;
+      try {
+        await this.$axios.get(this.BASE_URL).then((res) => {
+          data = res.data;
         });
       } catch (e) {
         console.log(e);
       }
+      return data;
     },
     deleteQuestion(item) {
       try {

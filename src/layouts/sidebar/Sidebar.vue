@@ -53,12 +53,17 @@ export default {
       {
         title: "Nhập dữ liệu",
         icon: "mdi-help-circle-outline",
-        to: "/dataQuestion",
+        to: "/data-question",
       },
       {
         title: "Dữ liệu",
         icon: "mdi-cube",
         to: "/data",
+      },
+      {
+        title: "Mô hình",
+        icon: "mdi-variable-box",
+        to: "/model",
       },
     ],
   }),
